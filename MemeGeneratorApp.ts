@@ -43,6 +43,16 @@ export class MemeGeneratorApp extends App {
             i18nDescription: 'Your Imgflip password',
         });
 
+        await configuration.settings.provideSetting({
+            id: 'show_image_preview',
+            type: SettingType.BOOLEAN,
+            packageValue: true,
+            required: false,
+            public: false,
+            i18nLabel: 'Show Image Preview',
+            i18nDescription: 'Show thumbnail images in the /meme command preview',
+        });
+
         await configuration.slashCommands.provideSlashCommand(new MemeCommand(this));
     }
 }

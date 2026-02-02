@@ -83,22 +83,34 @@ export class MemeCommand implements ISlashCommand {
             };
         }
 
-        // Create text + thumbnail items for each template
+        // Check if image preview is enabled
+        const showImagePreview = await read.getEnvironmentReader().getSettings().getValueById('show_image_preview');
+
+        // Create preview items
         const items: ISlashCommandPreviewItem[] = [];
         for (const [key, value] of matchingTemplates) {
-            // Add short key name
-            items.push({
-                id: `${key}-label`,
-                type: SlashCommandPreviewItemType.TEXT,
-                value: key,
-            });
-            // Add thumbnail preview using image proxy to resize (60px height)
-            const thumbnailUrl = `https://images.weserv.nl/?url=${encodeURIComponent(value.url)}&h=60&fit=contain`;
-            items.push({
-                id: key,
-                type: SlashCommandPreviewItemType.IMAGE,
-                value: thumbnailUrl,
-            });
+            if (showImagePreview) {
+                // Add short key name
+                items.push({
+                    id: `${key}-label`,
+                    type: SlashCommandPreviewItemType.TEXT,
+                    value: key,
+                });
+                // Add thumbnail preview using image proxy to resize (60px height)
+                const thumbnailUrl = `https://images.weserv.nl/?url=${encodeURIComponent(value.url)}&h=60&fit=contain`;
+                items.push({
+                    id: key,
+                    type: SlashCommandPreviewItemType.IMAGE,
+                    value: thumbnailUrl,
+                });
+            } else {
+                // Text only
+                items.push({
+                    id: key,
+                    type: SlashCommandPreviewItemType.TEXT,
+                    value: `${key} - ${value.name}`,
+                });
+            }
         }
 
         return {
