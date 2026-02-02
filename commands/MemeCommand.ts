@@ -13,6 +13,7 @@ import {
 } from '@rocket.chat/apps-engine/definition/slashcommands';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { App } from '@rocket.chat/apps-engine/definition/App';
+import { getTranslations, Translations } from '../i18n/translations';
 
 // Popular meme templates with their Imgflip IDs and preview image URLs
 const POPULAR_MEMES: { [key: string]: { id: string; name: string; url: string } } = {
@@ -72,13 +73,17 @@ export class MemeCommand implements ISlashCommand {
                 .slice(0, 6);
         }
 
+        // Get language setting
+        const lang = await read.getEnvironmentReader().getSettings().getValueById('language') || 'en';
+        const t = getTranslations(lang);
+
         if (matchingTemplates.length === 0) {
             return {
-                i18nTitle: 'No matching templates',
+                i18nTitle: t.noMatchingTemplates,
                 items: [{
                     id: 'no-match',
                     type: SlashCommandPreviewItemType.TEXT,
-                    value: `No templates matching "${args[0]}"`,
+                    value: `${t.noTemplatesMatching} "${args[0]}"`,
                 }],
             };
         }
@@ -114,7 +119,7 @@ export class MemeCommand implements ISlashCommand {
         }
 
         return {
-            i18nTitle: 'Meme Templates',
+            i18nTitle: t.memeTemplates,
             items,
         };
     }
@@ -144,12 +149,16 @@ export class MemeCommand implements ISlashCommand {
             return;
         }
 
+        // Get language setting
+        const lang = await read.getEnvironmentReader().getSettings().getValueById('language') || 'en';
+        const t = getTranslations(lang);
+
         // Show help message with the template name
         await this.sendMessage(
             modify,
             sender,
             room.id,
-            `Selected template: \`${templateKey}\` - ${memeInfo.name}\n\nUsage: \`/meme ${templateKey} "top text" "bottom text"\``
+            `${t.selectedTemplate}: \`${templateKey}\` - ${memeInfo.name}\n\n${t.usage}: \`/meme ${templateKey} "top text" "bottom text"\``
         );
     }
 
@@ -164,13 +173,17 @@ export class MemeCommand implements ISlashCommand {
         const sender = context.getSender();
         const room = context.getRoom();
 
+        // Get language setting
+        const lang = await read.getEnvironmentReader().getSettings().getValueById('language') || 'en';
+        const t = getTranslations(lang);
+
         if (args.length === 0 || args[0] === 'help') {
-            await this.sendHelp(modify, sender, room.id);
+            await this.sendHelp(modify, sender, room.id, t);
             return;
         }
 
         if (args[0] === 'list') {
-            await this.sendMemeList(modify, sender, room.id);
+            await this.sendMemeList(modify, sender, room.id, t);
             return;
         }
 
@@ -183,7 +196,7 @@ export class MemeCommand implements ISlashCommand {
                 modify,
                 sender,
                 room.id,
-                `❌ Unknown meme template: \`${template}\`\n\nUse \`/meme list\` to see available templates.`
+                `❌ ${t.unknownTemplate}: \`${template}\`\n\n${t.useListToSee}`
             );
             return;
         }
@@ -197,7 +210,7 @@ export class MemeCommand implements ISlashCommand {
                 modify,
                 sender,
                 room.id,
-                `❌ Please provide text for the meme.\n\nUsage: \`/meme ${template} "top text" "bottom text"\``
+                `❌ ${t.pleaseProvideText}\n\n${t.usage}: \`/meme ${template} "top text" "bottom text"\``
             );
             return;
         }
@@ -211,7 +224,7 @@ export class MemeCommand implements ISlashCommand {
                 modify,
                 sender,
                 room.id,
-                '❌ Imgflip credentials not configured. Please ask an admin to configure the Meme Generator app settings.'
+                `❌ ${t.credentialsNotConfigured}`
             );
             return;
         }
@@ -237,7 +250,7 @@ export class MemeCommand implements ISlashCommand {
                     modify,
                     sender,
                     room.id,
-                    '❌ Failed to generate meme. Please try again.'
+                    `❌ ${t.failedToGenerate}`
                 );
             }
         } catch (error) {
@@ -246,7 +259,7 @@ export class MemeCommand implements ISlashCommand {
                 modify,
                 sender,
                 room.id,
-                '❌ Error generating meme. Please try again later.'
+                `❌ ${t.errorGenerating}`
             );
         }
     }
@@ -316,41 +329,40 @@ export class MemeCommand implements ISlashCommand {
             .join('&');
     }
 
-    private async sendHelp(modify: IModify, sender: IUser, roomId: string): Promise<void> {
-        const helpText = `## 🎭 Meme Generator
+    private async sendHelp(modify: IModify, sender: IUser, roomId: string, t: Translations): Promise<void> {
+        const helpText = `## 🎭 ${t.helpTitle}
 
-**Usage:**
+**${t.helpUsage}:**
 \`\`\`
 /meme <template> "top text" "bottom text"
-/meme list                    - Show available templates
-/meme help                    - Show this help
+/meme list
+/meme help
 \`\`\`
 
-**Examples:**
+**${t.helpExamples}:**
 \`\`\`
 /meme drake "Using Slack" "Using Rocket.Chat"
 /meme change-my-mind "Rocket.Chat is the best"
 /meme everywhere "Memes." "Memes everywhere"
-/meme distracted "My work" "Me" "New meme plugin"
 \`\`\`
 
-**Popular templates:** drake, distracted, change-my-mind, everywhere, uno, always-has-been, this-is-fine, panik, stonks, trade-offer
+**${t.helpPopularTemplates}:** drake, distracted, change-my-mind, everywhere, uno, always-has-been, this-is-fine, panik, stonks, trade-offer
 
-Use \`/meme list\` for the full list!`;
+${t.helpUseList}`;
 
         await this.sendMessage(modify, sender, roomId, helpText);
     }
 
-    private async sendMemeList(modify: IModify, sender: IUser, roomId: string): Promise<void> {
+    private async sendMemeList(modify: IModify, sender: IUser, roomId: string, t: Translations): Promise<void> {
         const memeList = Object.entries(POPULAR_MEMES)
             .map(([key, value]) => `• \`${key}\` - ${value.name}`)
             .join('\n');
 
-        const message = `## 🎭 Available Meme Templates
+        const message = `## 🎭 ${t.availableTemplates}
 
 ${memeList}
 
-**Usage:** \`/meme <template> "top text" "bottom text"\``;
+**${t.usage}:** \`/meme <template> "top text" "bottom text"\``;
 
         await this.sendMessage(modify, sender, roomId, message);
     }

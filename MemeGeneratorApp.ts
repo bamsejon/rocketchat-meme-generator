@@ -53,6 +53,23 @@ export class MemeGeneratorApp extends App {
             i18nDescription: 'Show thumbnail images in the /meme command preview',
         });
 
+        await configuration.settings.provideSetting({
+            id: 'language',
+            type: SettingType.SELECT,
+            packageValue: 'en',
+            required: false,
+            public: false,
+            i18nLabel: 'Language',
+            i18nDescription: 'Language for messages and help text',
+            values: [
+                { key: 'en', i18nLabel: 'English' },
+                { key: 'sv', i18nLabel: 'Svenska' },
+                { key: 'de', i18nLabel: 'Deutsch' },
+                { key: 'fr', i18nLabel: 'Français' },
+                { key: 'es', i18nLabel: 'Español' },
+            ],
+        });
+
         await configuration.slashCommands.provideSlashCommand(new MemeCommand(this));
     }
 }
