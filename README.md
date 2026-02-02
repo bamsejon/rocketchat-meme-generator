@@ -6,6 +6,8 @@ A Rocket.Chat App that lets you generate memes using the `/meme` slash command, 
 
 - 🎭 **20+ Popular Meme Templates** - Drake, Distracted Boyfriend, Change My Mind, and more
 - ⚡ **Simple Slash Command** - Just type `/meme template "text"`
+- 🖼️ **Visual Preview** - See template thumbnails while typing
+- 🌍 **Multi-language Support** - English, Svenska, Deutsch, Français, Español
 - 🌐 **Powered by Imgflip API** - Always up-to-date meme templates
 - 👁️ **Preview Before Posting** - Help and list commands are only visible to you
 
@@ -13,7 +15,7 @@ A Rocket.Chat App that lets you generate memes using the `/meme` slash command, 
 
 ### Quick Install
 
-1. **Download** the latest release: `meme-generator_1.0.0.zip`
+1. **Download** the latest release from [Releases](https://github.com/bamsejon/rocketchat-meme-generator/releases)
 
 2. **Enable Apps in Rocket.Chat:**
    - Log in as administrator
@@ -25,9 +27,15 @@ A Rocket.Chat App that lets you generate memes using the `/meme` slash command, 
 3. **Install the App:**
    - Go to **Administration** → **Apps** → **Private Apps**
    - Click **Upload App**
-   - Select the downloaded `meme-generator_1.0.0.zip` file
+   - Select the downloaded `.zip` file
    - Click **Install**
    - When prompted, click **Agree** to accept permissions
+
+4. **Configure Settings:**
+   - Go to **Administration** → **Apps** → **Meme Generator** → **Settings**
+   - Enter your **Imgflip Username** and **Password** (create free account at [imgflip.com](https://imgflip.com))
+   - Optionally change **Language** and **Show Image Preview** settings
+   - Click **Save**
 
 ## Usage
 
@@ -87,11 +95,21 @@ A Rocket.Chat App that lets you generate memes using the `/meme` slash command, 
 | `buff-doge` | Buff Doge vs. Cheems |
 | `trade-offer` | Trade Offer |
 
+## Settings
+
+| Setting | Description |
+|---------|-------------|
+| **Imgflip Username** | Your Imgflip account username (required) |
+| **Imgflip Password** | Your Imgflip account password (required) |
+| **Show Image Preview** | Show thumbnail images when typing `/meme` |
+| **Language** | Language for messages (en, sv, de, fr, es) |
+
 ## Requirements
 
 - Rocket.Chat 6.0 or newer
 - Apps Framework enabled
 - Administrator access for installation
+- Free Imgflip account ([imgflip.com](https://imgflip.com))
 
 ## How It Works
 
