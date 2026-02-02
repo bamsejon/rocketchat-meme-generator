@@ -4,41 +4,142 @@ import {
     IPersistence,
     IRead,
 } from '@rocket.chat/apps-engine/definition/accessors';
-import { ISlashCommand, SlashCommandContext } from '@rocket.chat/apps-engine/definition/slashcommands';
+import {
+    ISlashCommand,
+    ISlashCommandPreview,
+    ISlashCommandPreviewItem,
+    SlashCommandContext,
+    SlashCommandPreviewItemType,
+} from '@rocket.chat/apps-engine/definition/slashcommands';
 import { IUser } from '@rocket.chat/apps-engine/definition/users';
 import { App } from '@rocket.chat/apps-engine/definition/App';
 
-// Popular meme templates with their Imgflip IDs
-const POPULAR_MEMES: { [key: string]: { id: string; name: string } } = {
-    'drake': { id: '181913649', name: 'Drake Hotline Bling' },
-    'distracted': { id: '112126428', name: 'Distracted Boyfriend' },
-    'change-my-mind': { id: '129242436', name: 'Change My Mind' },
-    'two-buttons': { id: '87743020', name: 'Two Buttons' },
-    'everywhere': { id: '347390', name: 'X, X Everywhere' },
-    'expanding-brain': { id: '93895088', name: 'Expanding Brain' },
-    'is-this': { id: '100777631', name: 'Is This a Pigeon?' },
-    'disaster-girl': { id: '97984', name: 'Disaster Girl' },
-    'uno': { id: '217743513', name: 'UNO Draw 25 Cards' },
-    'always-has-been': { id: '252600902', name: 'Always Has Been' },
-    'gru-plan': { id: '131940431', name: "Gru's Plan" },
-    'bernie': { id: '91538330', name: 'Bernie Sanders Once Again Asking' },
-    'think-about-it': { id: '217743513', name: 'Roll Safe Think About It' },
-    'stonks': { id: '52223451', name: 'Stonks' },
-    'sad-pablo': { id: '259237855', name: 'Sad Pablo Escobar' },
-    'this-is-fine': { id: '55311130', name: 'This Is Fine' },
-    'waiting': { id: '61520', name: 'Waiting Skeleton' },
-    'panik': { id: '226297822', name: 'Panik Kalm Panik' },
-    'buff-doge': { id: '247375501', name: 'Buff Doge vs. Cheems' },
-    'trade-offer': { id: '309868304', name: 'Trade Offer' },
+// Popular meme templates with their Imgflip IDs and preview image URLs
+const POPULAR_MEMES: { [key: string]: { id: string; name: string; url: string } } = {
+    'drake': { id: '181913649', name: 'Drake Hotline Bling', url: 'https://i.imgflip.com/30b1gx.jpg' },
+    'distracted': { id: '112126428', name: 'Distracted Boyfriend', url: 'https://i.imgflip.com/1ur9b0.jpg' },
+    'change-my-mind': { id: '129242436', name: 'Change My Mind', url: 'https://i.imgflip.com/24y43o.jpg' },
+    'two-buttons': { id: '87743020', name: 'Two Buttons', url: 'https://i.imgflip.com/1g8my4.jpg' },
+    'everywhere': { id: '91538330', name: 'X, X Everywhere', url: 'https://i.imgflip.com/1ihzfe.jpg' },
+    'expanding-brain': { id: '93895088', name: 'Expanding Brain', url: 'https://i.imgflip.com/1jwhww.jpg' },
+    'is-this': { id: '100777631', name: 'Is This a Pigeon?', url: 'https://i.imgflip.com/1o00in.jpg' },
+    'disaster-girl': { id: '97984', name: 'Disaster Girl', url: 'https://i.imgflip.com/23ls.jpg' },
+    'uno': { id: '217743513', name: 'UNO Draw 25 Cards', url: 'https://i.imgflip.com/3lmzyx.jpg' },
+    'always-has-been': { id: '252600902', name: 'Always Has Been', url: 'https://i.imgflip.com/46e43q.png' },
+    'gru-plan': { id: '131940431', name: "Gru's Plan", url: 'https://i.imgflip.com/26jxvz.jpg' },
+    'bernie': { id: '222403160', name: 'Bernie Sanders Once Again Asking', url: 'https://i.imgflip.com/3oevdk.jpg' },
+    'think-about-it': { id: '89370399', name: 'Roll Safe Think About It', url: 'https://i.imgflip.com/1h7in3.jpg' },
+    'stonks': { id: '52223451', name: 'Stonks', url: 'https://i.imgflip.com/2yhcnr.jpg' },
+    'sad-pablo': { id: '80707627', name: 'Sad Pablo Escobar', url: 'https://i.imgflip.com/1c1uej.jpg' },
+    'this-is-fine': { id: '55311130', name: 'This Is Fine', url: 'https://i.imgflip.com/wxica.jpg' },
+    'waiting': { id: '4087833', name: 'Waiting Skeleton', url: 'https://i.imgflip.com/2fm6x.jpg' },
+    'panik': { id: '226297822', name: 'Panik Kalm Panik', url: 'https://i.imgflip.com/3qqcim.png' },
+    'buff-doge': { id: '247375501', name: 'Buff Doge vs. Cheems', url: 'https://i.imgflip.com/43a45p.png' },
+    'trade-offer': { id: '309868304', name: 'Trade Offer', url: 'https://i.imgflip.com/54hjww.jpg' },
 };
 
 export class MemeCommand implements ISlashCommand {
     public command = 'meme';
     public i18nParamsExample = 'meme_params_example';
     public i18nDescription = 'meme_description';
-    public providesPreview = false;
+    public providesPreview = true;
 
     constructor(private readonly app: App) {}
+
+    public async previewer(
+        context: SlashCommandContext,
+        read: IRead,
+        modify: IModify,
+        http: IHttp,
+        persis: IPersistence
+    ): Promise<ISlashCommandPreview> {
+        const args = context.getArguments();
+
+        let matchingTemplates: [string, { id: string; name: string; url: string }][];
+
+        if (args.length === 0) {
+            // Show all templates (limit to 6 with text+image pairs)
+            matchingTemplates = Object.entries(POPULAR_MEMES).slice(0, 6);
+        } else {
+            const searchTerm = args[0].toLowerCase();
+
+            // Filter templates that match the search term
+            matchingTemplates = Object.entries(POPULAR_MEMES)
+                .filter(([key, value]) =>
+                    key.includes(searchTerm) ||
+                    value.name.toLowerCase().includes(searchTerm)
+                )
+                .slice(0, 6);
+        }
+
+        if (matchingTemplates.length === 0) {
+            return {
+                i18nTitle: 'No matching templates',
+                items: [{
+                    id: 'no-match',
+                    type: SlashCommandPreviewItemType.TEXT,
+                    value: `No templates matching "${args[0]}"`,
+                }],
+            };
+        }
+
+        // Create text + thumbnail items for each template
+        const items: ISlashCommandPreviewItem[] = [];
+        for (const [key, value] of matchingTemplates) {
+            // Add short key name
+            items.push({
+                id: `${key}-label`,
+                type: SlashCommandPreviewItemType.TEXT,
+                value: key,
+            });
+            // Add thumbnail preview using image proxy to resize (60px height)
+            const thumbnailUrl = `https://images.weserv.nl/?url=${encodeURIComponent(value.url)}&h=60&fit=contain`;
+            items.push({
+                id: key,
+                type: SlashCommandPreviewItemType.IMAGE,
+                value: thumbnailUrl,
+            });
+        }
+
+        return {
+            i18nTitle: 'Meme Templates',
+            items,
+        };
+    }
+
+    public async executePreviewItem(
+        item: ISlashCommandPreviewItem,
+        context: SlashCommandContext,
+        read: IRead,
+        modify: IModify,
+        http: IHttp,
+        persis: IPersistence
+    ): Promise<void> {
+        const sender = context.getSender();
+        const room = context.getRoom();
+
+        if (item.id === 'no-match') {
+            return;
+        }
+
+        // Handle both text labels (id ends with -label) and images
+        const templateKey = item.id.endsWith('-label')
+            ? item.id.replace('-label', '')
+            : item.id;
+
+        const memeInfo = POPULAR_MEMES[templateKey];
+        if (!memeInfo) {
+            return;
+        }
+
+        // Show help message with the template name
+        await this.sendMessage(
+            modify,
+            sender,
+            room.id,
+            `Selected template: \`${templateKey}\` - ${memeInfo.name}\n\nUsage: \`/meme ${templateKey} "top text" "bottom text"\``
+        );
+    }
 
     public async executor(
         context: SlashCommandContext,
@@ -89,9 +190,23 @@ export class MemeCommand implements ISlashCommand {
             return;
         }
 
+        // Get Imgflip credentials from settings
+        const username = await read.getEnvironmentReader().getSettings().getValueById('imgflip_username');
+        const password = await read.getEnvironmentReader().getSettings().getValueById('imgflip_password');
+
+        if (!username || !password) {
+            await this.sendMessage(
+                modify,
+                sender,
+                room.id,
+                '❌ Imgflip credentials not configured. Please ask an admin to configure the Meme Generator app settings.'
+            );
+            return;
+        }
+
         // Generate the meme
         try {
-            const memeUrl = await this.generateMeme(http, memeInfo.id, texts[0] || '', texts[1] || '');
+            const memeUrl = await this.generateMeme(http, memeInfo.id, texts[0] || '', texts[1] || '', username, password);
 
             if (memeUrl) {
                 // Post the meme as a message visible to everyone
@@ -153,7 +268,9 @@ export class MemeCommand implements ISlashCommand {
         http: IHttp,
         templateId: string,
         topText: string,
-        bottomText: string
+        bottomText: string,
+        username: string,
+        password: string
     ): Promise<string | null> {
         const response = await http.post('https://api.imgflip.com/caption_image', {
             headers: {
@@ -161,8 +278,8 @@ export class MemeCommand implements ISlashCommand {
             },
             content: this.buildFormData({
                 template_id: templateId,
-                username: 'imgflip_hubot',
-                password: 'imgflip_hubot',
+                username: username,
+                password: password,
                 text0: topText,
                 text1: bottomText,
             }),
