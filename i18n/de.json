@@ -1,0 +1,12 @@
+{
+    "meme_description": "Erstelle Memes mit dem /meme-Befehl",
+    "meme_params_example": "drake \"oberer Text\" \"unterer Text\"",
+    "Imgflip_Username": "Imgflip-Benutzername",
+    "Imgflip_Username_Description": "Ihr Imgflip-Benutzername (kostenloses Konto auf imgflip.com erstellen)",
+    "Imgflip_Password": "Imgflip-Passwort",
+    "Imgflip_Password_Description": "Ihr Imgflip-Passwort",
+    "Show_Image_Preview": "Bildvorschau anzeigen",
+    "Show_Image_Preview_Description": "Miniaturbilder in der /meme-Befehlsvorschau anzeigen",
+    "Language": "Sprache",
+    "Language_Description": "Sprache für Nachrichten und Hilfetext"
+}

@@ -1,0 +1,12 @@
+{
+    "meme_description": "Créez des mèmes avec la commande /meme",
+    "meme_params_example": "drake \"texte du haut\" \"texte du bas\"",
+    "Imgflip_Username": "Nom d'utilisateur Imgflip",
+    "Imgflip_Username_Description": "Votre nom d'utilisateur Imgflip (créez un compte gratuit sur imgflip.com)",
+    "Imgflip_Password": "Mot de passe Imgflip",
+    "Imgflip_Password_Description": "Votre mot de passe Imgflip",
+    "Show_Image_Preview": "Afficher l'aperçu des images",
+    "Show_Image_Preview_Description": "Afficher les vignettes dans l'aperçu de la commande /meme",
+    "Language": "Langue",
+    "Language_Description": "Langue pour les messages et l'aide"
+}

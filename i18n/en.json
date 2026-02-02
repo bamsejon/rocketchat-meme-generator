@@ -1,4 +1,12 @@
 {
-    "meme_description": "Generate memes with popular templates",
-    "meme_params_example": "<template> \"top text\" \"bottom text\" | list | help"
+    "meme_description": "Generate memes with /meme command",
+    "meme_params_example": "drake \"top text\" \"bottom text\"",
+    "Imgflip_Username": "Imgflip Username",
+    "Imgflip_Username_Description": "Your Imgflip username (create free account at imgflip.com)",
+    "Imgflip_Password": "Imgflip Password",
+    "Imgflip_Password_Description": "Your Imgflip password",
+    "Show_Image_Preview": "Show Image Preview",
+    "Show_Image_Preview_Description": "Show thumbnail images in the /meme command preview",
+    "Language": "Language",
+    "Language_Description": "Language for messages and help text"
 }

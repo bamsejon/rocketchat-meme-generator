@@ -29,8 +29,8 @@ export class MemeGeneratorApp extends App {
             packageValue: '',
             required: true,
             public: false,
-            i18nLabel: 'Imgflip Username',
-            i18nDescription: 'Your Imgflip username (create free account at imgflip.com)',
+            i18nLabel: 'Imgflip_Username',
+            i18nDescription: 'Imgflip_Username_Description',
         });
 
         await configuration.settings.provideSetting({
@@ -39,8 +39,8 @@ export class MemeGeneratorApp extends App {
             packageValue: '',
             required: true,
             public: false,
-            i18nLabel: 'Imgflip Password',
-            i18nDescription: 'Your Imgflip password',
+            i18nLabel: 'Imgflip_Password',
+            i18nDescription: 'Imgflip_Password_Description',
         });
 
         await configuration.settings.provideSetting({
@@ -49,8 +49,8 @@ export class MemeGeneratorApp extends App {
             packageValue: true,
             required: false,
             public: false,
-            i18nLabel: 'Show Image Preview',
-            i18nDescription: 'Show thumbnail images in the /meme command preview',
+            i18nLabel: 'Show_Image_Preview',
+            i18nDescription: 'Show_Image_Preview_Description',
         });
 
         await configuration.settings.provideSetting({
@@ -60,7 +60,7 @@ export class MemeGeneratorApp extends App {
             required: false,
             public: false,
             i18nLabel: 'Language',
-            i18nDescription: 'Language for messages and help text',
+            i18nDescription: 'Language_Description',
             values: [
                 { key: 'en', i18nLabel: 'English' },
                 { key: 'sv', i18nLabel: 'Svenska' },

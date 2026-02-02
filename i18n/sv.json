@@ -1,0 +1,12 @@
+{
+    "meme_description": "Skapa memes med /meme-kommandot",
+    "meme_params_example": "drake \"text ovan\" \"text nedan\"",
+    "Imgflip_Username": "Imgflip-användarnamn",
+    "Imgflip_Username_Description": "Ditt Imgflip-användarnamn (skapa gratis konto på imgflip.com)",
+    "Imgflip_Password": "Imgflip-lösenord",
+    "Imgflip_Password_Description": "Ditt Imgflip-lösenord",
+    "Show_Image_Preview": "Visa bildförhandsgranskning",
+    "Show_Image_Preview_Description": "Visa miniatyrbilder i /meme-kommandots förhandsgranskning",
+    "Language": "Språk",
+    "Language_Description": "Språk för meddelanden och hjälptext"
+}
