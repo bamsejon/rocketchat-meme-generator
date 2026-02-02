@@ -1,0 +1,27 @@
+{
+    "id": "b8f3c5e7-2a9d-4b1f-8e6c-3d5a7f9b0c2e",
+    "version": "1.0.0",
+    "requiredApiVersion": "^1.41.0",
+    "iconFile": "icon.png",
+    "author": {
+        "name": "bamsejon",
+        "homepage": "https://github.com/bamsejon/rocketchat-meme-generator",
+        "support": "https://github.com/bamsejon/rocketchat-meme-generator/issues"
+    },
+    "name": "Meme Generator",
+    "nameSlug": "meme-generator",
+    "classFile": "MemeGeneratorApp.ts",
+    "description": "Generate memes with /meme command using popular meme templates",
+    "implements": [],
+    "permissions": [
+        {
+            "name": "slashcommand"
+        },
+        {
+            "name": "networking"
+        },
+        {
+            "name": "message.write"
+        }
+    ]
+}

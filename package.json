@@ -1,0 +1,27 @@
+{
+    "name": "rocketchat-meme-generator",
+    "version": "1.0.0",
+    "description": "Generate memes with /meme command in Rocket.Chat",
+    "main": "MemeGeneratorApp.ts",
+    "scripts": {
+        "build": "rc-apps package",
+        "deploy": "rc-apps deploy --url $RC_URL --username $RC_USER --password $RC_PASS",
+        "deploy:update": "rc-apps deploy --url $RC_URL --username $RC_USER --password $RC_PASS --update"
+    },
+    "keywords": [
+        "rocketchat",
+        "app",
+        "meme",
+        "generator"
+    ],
+    "author": "bamsejon",
+    "license": "MIT",
+    "devDependencies": {
+        "@rocket.chat/apps-cli": "^1.8.0",
+        "@rocket.chat/apps-engine": "^1.41.0",
+        "@rocket.chat/ui-kit": "^0.33.0",
+        "@rocket.chat/icons": "^0.33.0",
+        "@types/node": "^16.0.0",
+        "typescript": "~4.9.0"
+    }
+}

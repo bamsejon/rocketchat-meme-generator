@@ -1,0 +1,4 @@
+{
+    "meme_description": "Generate memes with popular templates",
+    "meme_params_example": "<template> \"top text\" \"bottom text\" | list | help"
+}
